@@ -29,6 +29,26 @@ const validateUser = [
     .withMessage("Message cannot exceed 200 characters"),
 ];
 
+exports.usersSearchGet = (req, res) => {
+  const searchQuery = req.query.user?.toLowerCase() || "";
+  const users = usersStorage.getUsers();
+  const result = users.filter((user) => {
+    const firstName = user.firstName?.toLowerCase() || "";
+    const email = user.email?.toLowerCase() || "";
+    return firstName === searchQuery || email === searchQuery;
+  });
+
+  if (!searchQuery) {
+    return res.redirect("/");
+  }
+
+  if (result.length === 0) {
+    return res.status(404).render("searchNotFound", { title: "User list" });
+  }
+  console.log(result);
+  res.render("search", { title: "User list", users: result });
+};
+
 exports.usersListGet = (req, res) => {
   res.render("index", {
     title: "User list",
@@ -39,6 +59,7 @@ exports.usersListGet = (req, res) => {
 exports.usersCreateGet = (req, res) => {
   res.render("createUser", {
     title: "Create user",
+    formData: req.body,
   });
 };
 
@@ -50,10 +71,11 @@ exports.usersCreatePost = [
       return res.status(404).render("createUser", {
         title: "Create user",
         errors: errors.array(),
+        formData: req.body,
       });
     }
-    const { firstName, lastName } = matchedData(req);
-    usersStorage.addUser({ firstName, lastName });
+    const { firstName, lastName, email, age, bio } = matchedData(req);
+    usersStorage.addUser({ firstName, lastName, email, age, bio });
     res.redirect("/");
   },
 ];
@@ -78,8 +100,14 @@ exports.usersUpdatePost = [
         errors: errors.array(),
       });
     }
-    const { firstName, lastName } = matchedData(req);
-    usersStorage.updateUser(req.params.id, { firstName, lastName });
+    const { firstName, lastName, email, age, bio } = matchedData(req);
+    usersStorage.updateUser(req.params.id, {
+      firstName,
+      lastName,
+      email,
+      age,
+      bio,
+    });
     res.redirect("/");
   },
 ];

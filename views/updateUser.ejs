@@ -9,18 +9,45 @@
     <h1><% title %></h1>
     <%- include('partials/errors.ejs') %>
     <form action="/<%= user.id %>/update" method="POST">
+      <label for="firstName">First name: </label>
       <input
         type="text"
+        id="firstName"
         name="firstName"
         value="<%= user.firstName %>"
         required
       />
+      <label for="lastName">Last name:</label>
       <input
         type="text"
+        id="lastName"
         name="lastName"
         value="<%= user.lastName %>"
         required
       />
+      <label for="email">Email:</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        value="<%= user.email %>"
+        required
+      />
+      <label for="age">Age <i>(optional)</i>:</label>
+      <input
+        type="number"
+        id="age"
+        name="age"
+        value="<%= user.age %>"
+        style="
+          -moz-appearance: textfield;
+          -webkit-appearance: none;
+          margin: 0;
+          appearance: none;
+        "
+      />
+      <label for="bio">Bio <i>(optional)</i>:</label>
+      <textarea id="bio" name="bio"><%= user.bio %></textarea>
       <button type="submit">Update user</button>
     </form>
     <a href="/">Back to home</a>

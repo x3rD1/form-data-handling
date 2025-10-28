@@ -6,12 +6,6 @@
     <title><%= title %></title>
   </head>
   <body>
-    <h1><%= title %></h1>
-    <!-- create form with search input -->
-    <form action="/search" method="GET">
-      <input type="text" name="user" placeholder="Search..." />
-      <button type="submit">Search</button>
-    </form>
     <ul>
       <% if (locals.users) { %>
       <!-- prettier-ignore-->
@@ -34,6 +28,5 @@
       </form>
       <% }) %> <% } %>
     </ul>
-    <a href="/create">Create a user</a>
   </body>
 </html>
