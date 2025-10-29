@@ -1,5 +1,10 @@
 const usersStorage = require("../storages/usersStorage");
-const { body, validationResult, matchedData } = require("express-validator");
+const {
+  body,
+  validationResult,
+  matchedData,
+  query,
+} = require("express-validator");
 
 const alphaErr = "must only contain letters.";
 const lengthErr = "must be between 1 and 10 characters.";
@@ -27,27 +32,31 @@ const validateUser = [
     .trim()
     .isLength({ max: 200 })
     .withMessage("Message cannot exceed 200 characters"),
+  query("user").notEmpty().trim(),
 ];
 
-exports.usersSearchGet = (req, res) => {
-  const searchQuery = req.query.user?.toLowerCase() || "";
-  const users = usersStorage.getUsers();
-  const result = users.filter((user) => {
-    const firstName = user.firstName?.toLowerCase() || "";
-    const email = user.email?.toLowerCase() || "";
-    return firstName === searchQuery || email === searchQuery;
-  });
+exports.usersSearchGet = [
+  validateUser,
+  (req, res) => {
+    const searchQuery = req.query.user?.toLowerCase() || "";
+    const users = usersStorage.getUsers();
+    const result = users.filter((user) => {
+      const firstName = user.firstName?.toLowerCase() || "";
+      const email = user.email?.toLowerCase() || "";
+      return firstName === searchQuery || email === searchQuery;
+    });
 
-  if (!searchQuery) {
-    return res.redirect("/");
-  }
+    if (!searchQuery) {
+      return res.redirect("/");
+    }
 
-  if (result.length === 0) {
-    return res.status(404).render("searchNotFound", { title: "User list" });
-  }
-  console.log(result);
-  res.render("search", { title: "User list", users: result });
-};
+    if (result.length === 0) {
+      return res.status(404).render("searchNotFound", { title: "User list" });
+    }
+    console.log(result);
+    res.render("search", { title: "User list", users: result });
+  },
+];
 
 exports.usersListGet = (req, res) => {
   res.render("index", {
