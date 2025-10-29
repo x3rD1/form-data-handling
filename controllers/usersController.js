@@ -32,7 +32,7 @@ const validateUser = [
     .trim()
     .isLength({ max: 200 })
     .withMessage("Message cannot exceed 200 characters"),
-  query("user").notEmpty().trim(),
+  query("user").trim().notEmpty(),
 ];
 
 exports.usersSearchGet = [
